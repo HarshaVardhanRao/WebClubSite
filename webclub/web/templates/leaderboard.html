@@ -1,1 +1,106 @@
-<h1>LeaderBoard</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .leaderboard-container {
+            width: 80%;
+            max-width: 900px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .leaderboard-header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .ratings {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .member-id {
+            font-style: italic;
+            color: #888;
+        }
+
+        @media (max-width: 600px) {
+            table, th, td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="leaderboard-container">
+        <div class="leaderboard-header">Leaderboard</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Member ID</th>
+                    <th>Name</th>
+                    <th>Ratings</th>
+                    <th>Position</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in top_members %}
+                <tr>
+                    <td class="rank">{{ forloop.counter }}</td>
+                    <td class="member-id">{{ student.web_mem }}</td>
+                    <td>{{ student.name }}</td>
+                    <td class="ratings">{{ student.rating }}</td>
+                    <td class="Rank">{{ student.rank }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
