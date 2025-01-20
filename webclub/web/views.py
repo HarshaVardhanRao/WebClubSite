@@ -1,8 +1,7 @@
-from django.shortcuts import render
-from .models import Student,mentor
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render, redirect
+from .models import Student,mentor,Task, TaskCompletion
+from django.http import HttpResponse,JsonResponse
 import pandas as pd
-
 def index(request):
     mentors = mentor.objects.all()
     return render(request, 'index.html', {'mentors': mentors})
@@ -19,6 +18,33 @@ def leaderboard(request):
     except IndexError:
         top_members = []
     return render(request, 'leaderboard.html', {'top_members': top_members})
+
+
+
+
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import JsonResponse
+from .models import Student, Task, TaskCompletion
+
+def complete_task(request):
+    if request.method == "POST":
+        web_mem_id = request.POST.get("web_mem_id")
+        task_id = request.POST.get("task_id")
+
+        student = get_object_or_404(Student, web_mem=web_mem_id)
+        task = get_object_or_404(Task, id=task_id)
+
+        # Check if already completed
+        if TaskCompletion.objects.filter(student=student, task=task).exists():
+            return JsonResponse({"message": "Task already completed!"}, status=400)
+
+        # Save the completion
+        TaskCompletion.objects.create(student=student, task=task)
+        return JsonResponse({"message": "Task marked as completed!"})
+    
+    # Fetch tasks for the context
+    tasks = Task.objects.all()
+    return render(request, 'tasks.html', {'tasks': tasks})
 
 
 

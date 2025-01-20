@@ -40,3 +40,21 @@ class mentor(models.Model):
     mentor_dept= models.CharField(max_length=20, choices=DEPT_CHOICES, default="CSE")
     year = models.IntegerField(default=3)
 
+class Task(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    assigned_date = models.DateField(auto_now_add=True)
+    due_date = models.DateField()
+    # Optional: Assign tasks to specific students or groups
+    assigned_to = models.ManyToManyField('Student', blank=True)
+
+    def __str__(self):
+        return self.title
+
+class TaskCompletion(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    completion_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student} completed {self.task}"

@@ -1,0 +1,13 @@
+{% for task in tasks %}
+  <div>
+    <h3>{{ task.title }}</h3>
+    <p>{{ task.description }}</p>
+    <form method="POST" action="{% url 'complete_task' %}">
+      {% csrf_token %}
+      <input type="hidden" name="task_id" value="{{ task.id }}">
+      <label for="web_mem_id">Enter Web_Mem ID:</label>
+      <input type="text" id="web_mem_id" name="web_mem_id" required>
+      <button type="submit">Mark as Complete</button>
+    </form>
+  </div>
+{% endfor %}
