@@ -1,4 +1,13 @@
 from django.db import models
+class mentor(models.Model):
+    name = models.CharField(max_length=100)
+    roll_no = models.CharField(max_length=12)
+    github_user = models.CharField(max_length=58,default="Username")
+    DEPT_CHOICES = [
+        ("CSE","CSE"),("CAI","CAI"),("CSD","CSD"),("CSM","CSM"),("CSC","CSC"),("CST","CST"),("ECE","ECE"),("EEE","EEE"),("CE","CE"),("ME","ME")
+    ]
+    mentor_dept= models.CharField(max_length=20, choices=DEPT_CHOICES, default="CSE")
+    year = models.IntegerField(default=3)
 
 class Student(models.Model):
     name = models.CharField(max_length=100)
@@ -14,6 +23,7 @@ class Student(models.Model):
     rank = models.IntegerField(default=1)
     rating = models.FloatField(default=0.00)
     project_score = models.FloatField(default=0.0)
+    mentor = models.ForeignKey('mentor', on_delete=models.SET_NULL, null=True, blank=True, related_name='mentees')
     def __str__(self):
         return self.name
     def type(self):
@@ -30,15 +40,6 @@ class Student(models.Model):
 
         super().save(*args, **kwargs)
 
-class mentor(models.Model):
-    name = models.CharField(max_length=100)
-    roll_no = models.CharField(max_length=12)
-    github_user = models.CharField(max_length=58,default="Username")
-    DEPT_CHOICES = [
-        ("CSE","CSE"),("CAI","CAI"),("CSD","CSD"),("CSM","CSM"),("CSC","CSC"),("CST","CST"),("ECE","ECE"),("EEE","EEE"),("CE","CE"),("ME","ME")
-    ]
-    mentor_dept= models.CharField(max_length=20, choices=DEPT_CHOICES, default="CSE")
-    year = models.IntegerField(default=3)
 
 class Task(models.Model):
     title = models.CharField(max_length=255)

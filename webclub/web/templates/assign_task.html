@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Task</title>
+</head>
+<body>
+    <h1>Assign Task</h1>
+    <form method="POST" id="assignTaskForm">
+        {% csrf_token %}
+        <label for="mentor_id">Mentor ID:</label><br>
+        <input type="text" id="mentor_id" name="mentor_id" placeholder="Enter Mentor ID" required><br><br>
+
+        <label for="mentor_roll_no">Mentor Roll No:</label><br>
+        <input type="text" id="mentor_roll_no" name="mentor_roll_no" placeholder="Enter Mentor Roll Number" required><br><br>
+
+        <label for="title">Task Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="description">Task Description:</label><br>
+        <textarea id="description" name="description" rows="4" required></textarea><br><br>
+
+        <label for="due_date">Due Date:</label><br>
+        <input type="date" id="due_date" name="due_date" required><br><br>
+
+        <label for="assign_to_all">
+            <input type="checkbox" id="assign_to_all" name="assign_to_all" checked>
+            Assign to all students
+        </label><br><br>
+
+        <button type="submit">Assign Task</button>
+    </form>
+
+    <script>
+        document.getElementById('assignTaskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch("{% url 'assign_task' %}", {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(data => { throw new Error(data.error); });
+                }
+            })
+            .then(data => {
+                alert(data.message);
+                this.reset();
+            })
+            .catch(error => alert('Error: ' + error.message));
+        });
+    </script>
+</body>
+</html>

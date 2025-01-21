@@ -2,6 +2,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import Student,mentor,Task, TaskCompletion
 from django.http import HttpResponse,JsonResponse
 import pandas as pd
+from math import ceil
+from django.db.models import Count
+
+
 def index(request):
     mentors = mentor.objects.all()
     return render(request, 'index.html', {'mentors': mentors})
@@ -22,9 +26,7 @@ def leaderboard(request):
 
 
 
-from django.shortcuts import get_object_or_404, render, redirect
-from django.http import JsonResponse
-from .models import Student, Task, TaskCompletion
+
 
 def complete_task(request):
     if request.method == "POST":
@@ -34,18 +36,87 @@ def complete_task(request):
         student = get_object_or_404(Student, web_mem=web_mem_id)
         task = get_object_or_404(Task, id=task_id)
 
-        # Check if already completed
         if TaskCompletion.objects.filter(student=student, task=task).exists():
             return JsonResponse({"message": "Task already completed!"}, status=400)
 
-        # Save the completion
         TaskCompletion.objects.create(student=student, task=task)
         return JsonResponse({"message": "Task marked as completed!"})
     
-    # Fetch tasks for the context
     tasks = Task.objects.all()
     return render(request, 'tasks.html', {'tasks': tasks})
 
+def assign_task(request):
+    if request.method == "POST":
+        mentor_id = request.POST.get('mentor_id')
+        mentor_roll_no = request.POST.get('mentor_roll_no')
+        task_title = request.POST.get('title')
+        task_description = request.POST.get('description')
+        due_date = request.POST.get('due_date')
+        assign_to_all = request.POST.get('assign_to_all') == 'on'
+        print(assign_to_all)
+        try:
+            mentor_obj = get_object_or_404(mentor, id=mentor_id, roll_no=mentor_roll_no)
+        except:
+            return JsonResponse({"error": "Invalid mentor ID or roll number."}, status=400)
+
+        task = Task.objects.create(
+            title=task_title,
+            description=task_description,
+            due_date=due_date,
+        )
+
+        if assign_to_all:
+            students = Student.objects.all()
+        else:
+            students = Student.objects.filter(mentor=mentor_obj)
+
+        if not students.exists():
+            return JsonResponse({"error": "No students found to assign this task."}, status=400)
+
+        task.assigned_to.set(students)
+        return JsonResponse({"message": f"Task successfully assigned to {'all students' if assign_to_all else 'your mentees'}!"})
+
+    return render(request, 'assign_task.html')
+
+def get_max_students_per_mentor():
+    from math import ceil
+    total_students = Student.objects.count()
+    total_mentors = mentor.objects.count()
+    return ceil(total_students / total_mentors) if total_mentors > 0 else 0
+
+def select_mentor(request):
+    if request.method == "POST":
+        student_id = request.POST.get('student_id')
+        roll = request.POST.get('roll')
+        mentor_id = request.POST.get('mentor_id')
+
+        student = get_object_or_404(Student, web_mem=student_id,roll_no=roll)
+        if student.mentor is not None:
+            return JsonResponse({"error": "You cannot change your mentor! Contact Coordinator."}, status=400)
+
+        selected_mentor = get_object_or_404(mentor, id=mentor_id)
+
+        max_students = get_max_students_per_mentor()
+        current_students = selected_mentor.mentees.count()
+
+        if current_students >= max_students:
+            return JsonResponse({"error": "This mentor has reached the maximum capacity."}, status=400)
+
+        student.mentor = selected_mentor
+        student.save()
+
+        return JsonResponse({"message": "Mentor successfully assigned!"})
+
+    max_students = get_max_students_per_mentor()
+    mentors = mentor.objects.annotate(student_count=Count('mentees'))
+    return render(request, 'select_mentor.html', {'mentors': mentors, 'max_students': max_students})
+
+def deassign_all_mentors(request):
+    if request.method == "POST":
+        Student.objects.update(mentor=None)
+        return JsonResponse({"message": "All mentors have been deassigned from students successfully."})
+    
+    return JsonResponse({"error": "Invalid request method. Use POST to deassign mentors."}, status=405)
 
 
 def upload_students(request):
