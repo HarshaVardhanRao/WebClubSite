@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300&family=Nova+Round&display=swap");
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: url(./galleryImages/bg2.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background-color: #0a0a0a; /* Dark background color */
+      }
+
+      .overlay-active {
+        overflow: hidden; /* Prevent scrolling on the body when the overlay is active */
+      }
+
+      .heading {
+        font-size: 45px;
+        font-family: "Nova Round", system-ui;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin: 10px 0;
+      }
+
+      /* The grid: Four equal columns that float next to each other */
+      .column {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        width: 300px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle box-shadow */
+      }
+
+      .column img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 8px;
+        object-fit: contain;
+      }
+
+      .row {
+        justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .column img:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+      }
+
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      .container {
+        position: fixed;
+        display: none;
+        z-index: 1;
+        padding-top: 20px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+
+      #imgtext {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        color: white;
+        font-size: 20px;
+      }
+
+      .closebtn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        color: white;
+        font-size: 35px;
+        cursor: pointer;
+      }
+
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -30px;
+        padding: 16px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+      }
+
+      .prev:hover,
+      .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .prev {
+        left: 0;
+        border-radius: 3px 0 0 3px;
+      }
+
+      .next {
+        right: 0;
+        border-radius: 0 3px 3px 0;
+      }
+
+      .event-title {
+        color: #333e52;
+        font-family: "Georgia", serif;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 5px 5px 6px rgba(74, 72, 72, 0.5);
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .button-link {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        background-color: #3498db;
+        color: #fff;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        margin: 10px 30px;
+      }
+
+      .button-link:hover {
+        background-color: #2980b9;
+      }
+
+      #expandedImg {
+        
+        display: block;
+        margin: auto;
+        /* width: 70%; */
+        height: 90%;
+      }
+
+      .column video {
+        width: 100%;
+      }
+
+      /* Media query for smaller screens */
+      @media screen and (max-width: 768px) {
+        #expandedImg {
+          height: auto; /* Adjust the height for smaller screens */
+          width: 100%;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        .column {
+          width: calc(50% - 50px); /* Two columns per row with some gap */
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .heading {
+          font-size: 30px;
+        }
+        .event-title {
+          font-size: 20px;
+        }
+        .column {
+          padding: 2px;
+        }
+      }
+      @media screen and (max-width: 900px) {
+        .video {
+          width: 80%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center">
+      <h2 class="heading">Event-wise Image Gallery</h2>
+      <b>Presented by MITS Web Club</b>
+    </div>
+
+    <a href="../index.html" class="button-link">Home</a>
+    <!-- Event 1 -->
+    <div class="event-title">Badge Cermany (19th October 2023)</div>
+    <div class="row">
+      <div class="column video">
+        <video autoplay controls loop>
+          <source src="./videos/intro.mp4" type="video/mp4" />
+          <source src="./videos/intro.ogg" type="video/ogg" />
+        </video>
+      </div>
+
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/1.jpg"
+          alt="Badge Cermany - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/2.jpg"
+          alt="Badge Cermany - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/3.jpg"
+          alt="Badge Cermany - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/4.jpg"
+          alt="Badge Cermany - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/5.jpg"
+          alt="Badge Cermany - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/6.jpg"
+          alt="Badge Cermany - Photo 6"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/7.jpg"
+          alt="Badge Cermany - Photo 7"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/cermany 19102023/8.jpg"
+          alt="Badge Cermany - Photo 8"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 1 -->
+    </div>
+
+    <!-- Event 2 -->
+    <div class="event-title">Mentors Selection</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/1.jpg"
+          alt="Mentor Selection - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/2.jpg"
+          alt="Mentor Selection - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/3.jpg"
+          alt="Mentor Selection - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/4.jpg"
+          alt="Mentor Selection - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/5.jpg"
+          alt="Mentor Selection - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/6.jpg"
+          alt="Mentor Selection - Photo 6"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/7.jpg"
+          alt="Mentor Selection - Photo 7"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/8.jpg"
+          alt="Mentor Selection - Photo 8"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/9.jpg"
+          alt="Mentor Selection - Photo 9"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/10.jpg"
+          alt="Mentor Selection - Photo 10"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/11.jpg"
+          alt="Mentor Selection - Photo 11"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/mentorSelection/12.jpg"
+          alt="Mentor Selection - Photo 12"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 2 -->
+    </div>
+
+    <!-- Event 3-->
+    <div class="event-title">WebDevelopment Workshop (14th June 2023)</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/AI 14062023/1.jpg"
+          alt="WebDevelopment Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/AI 14062023/2.jpg"
+          alt="WebDevelopment Workshop - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/AI 14062023/3.jpg"
+          alt="WebDevelopment Workshop - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/AI 14062023/4.jpg"
+          alt="WebDevelopment Workshop - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/AI 14062023/5.jpg"
+          alt="WebDevelopment Workshop - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 3 -->
+    </div>
+
+    <!-- Event 4-->
+    <div class="event-title">Orientation WebDevelopment (19th August 2023)</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/1.jpg"
+          alt="Orientation Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/2.jpg"
+          alt="Orientation Workshop - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/3.jpg"
+          alt="Orientation Workshop - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/4.jpg"
+          alt="Orientation Workshop - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/5.jpg"
+          alt="Orientation Workshop - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/6.jpg"
+          alt="Orientation Workshop - Photo 6"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/7.jpg"
+          alt="Orientation Workshop - Photo 7"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/8.jpg"
+          alt="Orientation Workshop - Photo 8"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/9.jpg"
+          alt="Orientation Workshop - Photo 9"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/19082023/10.jpg"
+          alt="Orientation Workshop - Photo10"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 4 -->
+    </div>
+
+    <!-- Event 5-->
+    <div class="event-title">
+      JavaScript Workshop for IEEE (31th October 2023)
+    </div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/1.jpg"
+          alt="JavaScript Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/2.jpg"
+          alt="JavaScript Workshop - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/3.jpg"
+          alt="JavaScript Workshop - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/4.jpg"
+          alt="JavaScript Workshop - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/5.jpg"
+          alt="JavaScript Workshop - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/6.jpg"
+          alt="JavaScript Workshop - Photo 6"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ieee 31102023/7.jpg"
+          alt="JavaScript Workshop - Photo 7"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 5 -->
+    </div>
+
+    <!-- Event 6-->
+    <div class="event-title">Front-End WebDevelopment (04th November 2023)</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/04112023/1.jpg"
+          alt="Front-End Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/04112023/2.jpg"
+          alt="Front-End Workshop - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/04112023/3.jpg"
+          alt="Front-End Workshop - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/04112023/5.jpg"
+          alt="Front-End Workshop - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/04112023/6.jpg"
+          alt="Front-End Workshop - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 6 -->
+    </div>
+
+    <!-- Event 7-->
+    <div class="event-title">FullStack WebDevelopment (18th January 2024)</div>
+    <h3 style="text-align: center">FrontEnd</h3>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/7.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/8.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/9.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/10.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/11.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/12.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/13.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/14.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+    </div>
+
+    <h3 style="text-align: center">BackEnd</h3>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/1.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/2.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/3.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/4.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/5.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/18012024/6.jpg"
+          alt="FrontEnd Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+    </div>
+
+    <!-- Event 8-->
+    <div class="event-title">Back-End WebDevelopment (20th January 2024)</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/1.jpg"
+          alt="Back-End Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/2.jpg"
+          alt="Back-End Workshop - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/3.jpg"
+          alt="Back-End Workshop - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/4.jpg"
+          alt="Back-End Workshop - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/5.jpg"
+          alt="Back-End Workshop - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/6.jpg"
+          alt="Back-End Workshop - Photo 6"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/7.jpg"
+          alt="Back-End Workshop - Photo 7"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/8.jpg"
+          alt="Back-End Workshop - Photo 8"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/9.jpg"
+          alt="Back-End Workshop - Photo 9"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/10.jpg"
+          alt="Back-End Workshop - Photo 10"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/11.jpg"
+          alt="Back-End Workshop - Photo 11"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/20102024/12.jpg"
+          alt="Back-End Workshop - Photo 12"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images for Event 8 -->
+    </div>
+
+    <!-- Event 9-->
+    <div class="event-title">Back-End WebDevelopment (03rd February 2024)</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/03022024/1.jpg"
+          alt="Back-End Workshop - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/03022024/2.jpg"
+          alt="Back-End Workshop - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/03022024/3.jpg"
+          alt="Back-End Workshop - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/03022024/4.jpg"
+          alt="Back-End Workshop - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/03022024/5.jpg"
+          alt="Back-End Workshop - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images-->
+    </div>
+
+    <!-- Event 10-->
+    <div class="event-title">Gmocs 2k23</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/gmocs2k23/1.jpg"
+          alt="Gmocs 2k23 - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/gmocs2k23/2.jpg"
+          alt="Gmocs 2k23 - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/gmocs2k23/3.jpg"
+          alt="Gmocs 2k23 - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/gmocs2k23/4.jpg"
+          alt="Gmocs 2k23 - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images -->
+    </div>
+
+    <!-- Event 11-->
+    <div class="event-title">ASHV_2k24</div>
+    <div class="row">
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/1.jpg"
+          alt="ASHV_2k24 - Photo 1"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/2.jpg"
+          alt="ASHV_2k24 - Photo 2"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/3.jpg"
+          alt="ASHV_2k24 - Photo 3"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/4.jpg"
+          alt="ASHV_2k24 - Photo 4"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/5.jpg"
+          alt="ASHV_2k24 - Photo 5"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/6.jpg"
+          alt="ASHV_2k24 - Photo 6"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <div class="column">
+        <img
+          src="./galleryImages/ashv2k24/7.jpg"
+          alt="ASHV_2k24 - Photo 7"
+          onclick="myFunction(this);"
+        />
+      </div>
+      <!-- Add more images -->
+    </div>
+
+    <!-- The expanding image container -->
+    <div class="container">
+      <span onclick="closeImage()" class="closebtn">&times;</span>
+      <span class="prev" onclick="plusSlides(-1)">&#10094;</span>
+      <span class="next" onclick="plusSlides(1)">&#10095;</span>
+      <img id="expandedImg" alt="Expanded Image" />
+
+      <div id="imgtext"></div>
+    </div>
+
+    <script>
+      var slideIndex = 1;
+      var expandImg = document.getElementById("expandedImg");
+      var imgtext = document.getElementById("imgtext");
+
+      function myFunction(imgs) {
+        var currentIndex =
+          Array.from(document.querySelectorAll(".column img")).indexOf(imgs) +
+          1;
+        slideIndex = currentIndex;
+        showSlides(slideIndex);
+
+        document.querySelector(".container").style.display = "flex";
+        document.body.classList.add("overlay-active"); // Add class to freeze background
+      }
+
+      function closeImage() {
+        document.querySelector(".container").style.display = "none";
+        document.body.classList.remove("overlay-active"); // Remove class to unfreeze background
+      }
+
+      function plusSlides(n) {
+        showSlides((slideIndex += n));
+      }
+
+      function showSlides(n) {
+        var slides = document.querySelectorAll(".column img");
+        if (n > slides.length) {
+          slideIndex = 1;
+        }
+        if (n < 1) {
+          slideIndex = slides.length;
+        }
+        expandImg.src = slides[slideIndex - 1].src;
+        imgtext.innerHTML = slides[slideIndex - 1].alt;
+      }
+    </script>
+  </body>
+</html>
