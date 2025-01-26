@@ -222,23 +222,28 @@
             <p style="color: #fff;">Recognizing Top Contributors and Achievements</p>
         </div>
         <hr>
-        {% for task in tasks %}
-    <div class="task">
-        <h3><Strong>Task : </Strong>{{ task.title }}</h3>
-        <p><Strong>Description : </Strong>{{ task.description }}</p>
-        <p><Strong>Due Date : </Strong>{{ task.due_date }}</p>
-        <form method="POST" action="{% url 'devspace' %}">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="complete_task">
-            <input type="hidden" name="task_id" value="{{ task.id }}">
-            
-        <label for="web_mem_id"><strong>Web ID:</strong></label>
-        <input type="text" id="web_mem_id" name="web_mem_id" required>
-        <div style="display: flex; flex-direction: column;align-items: center;">
-        <button type="submit">Mark as Complete</button></div>
-        </form>
-    </div>
-    {% endfor %}
+        <div class="task">
+            <h3><Strong>Task : </Strong>
+                <select name="task_title" id="task_title">
+                    <option value=""></option>
+                    {% for task in tasks %}
+                    <option value="{{ task.title }}" data-description="{{ task.description }}" data-duedate="{{ task.due_date }}" data-taskid="{{ task.id }}"="">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+            </h3>
+            <p id="taskDescription"><Strong>Description : </Strong></p>
+            <p id="taskDueDate"><Strong>Due Date : </Strong></p>
+            <form method="POST" action="{% url 'devspace' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="complete_task">
+                <input type="hidden" name="task_id" value="">
+                    
+                <label for="web_mem_id"><strong>Web ID:</strong></label>
+                <input type="text" id="web_mem_id" name="web_mem_id" required>
+                <div style="display: flex; flex-direction: column;align-items: center;">
+                <button type="submit">Mark as Complete</button></div>
+            </form>
+        </div>
     <div ></div></div>
     <div class="mentor-selection">
     <h1>Select a Mentor</h1>
@@ -275,6 +280,16 @@
                 headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
             }).then(response => response.json())
             .then(data => alert(data.message || data.error));
+        });
+        
+        const taskTitle = document.getElementById('task_title');
+        taskTitle.addEventListener('change', function () {
+            console.log("Hello")
+            const description = taskTitle.selectedOptions[0].dataset.description;
+            const dueDate = taskTitle.selectedOptions[0].dataset.duedate;
+            document.getElementById('taskDescription').innerHTML = `<strong>Description:</strong> ${description}`;
+            document.getElementById('taskDueDate').innerHTML = `<strong>Due Date:</strong> ${dueDate}`;
+            document.querySelector('input[name=task_id]').value = taskTitle.selectedOptions[0].dataset.taskid;
         });
     </script>
 </body>

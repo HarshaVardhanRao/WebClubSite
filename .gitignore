@@ -3,4 +3,5 @@ __pycache__/
 /__pycache__
 /webclub/web/__pycache__/
 /webclub/webclub/__pycache__/
+/webclub/migrations/__pycache__
 *.pyc

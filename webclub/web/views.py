@@ -58,6 +58,7 @@ def devspace(request):
         # Handle GET requests (if applicable)
         top_members = Student.objects.order_by('-rating')[:5]
         tasks = Task.objects.all()
+        print(tasks)
         max_students = get_max_students_per_mentor()
         mentors = mentor.objects.annotate(student_count=Count('mentees'))
 
