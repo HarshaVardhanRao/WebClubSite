@@ -37,7 +37,7 @@
             color:rgb(255, 255, 255);
 
         }
-        .pageOne hr{
+        hr{
             width: 80vw;
             border: 1px solid #F0A028;
             text-align: center;
@@ -202,7 +202,6 @@
                     <th>Member ID</th>
                     <th>Name</th>
                     <th>Ratings</th>
-                    <th>Position</th>
                 </tr>
             </thead>
             <tbody>
@@ -212,7 +211,6 @@
                     <td class="member-id">{{ student.web_mem }}</td>
                     <td>{{ student.name }}</td>
                     <td class="ratings">{{ student.rating }}</td>
-                    <td class="Rank">{{ student.rank }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -223,6 +221,7 @@
             <h2>Member Leaderboard</h2>
             <p style="color: #fff;">Recognizing Top Contributors and Achievements</p>
         </div>
+        <hr>
         {% for task in tasks %}
     <div class="task">
         <h3><Strong>Task : </Strong>{{ task.title }}</h3>
@@ -244,6 +243,7 @@
     <div class="mentor-selection">
     <h1>Select a Mentor</h1>
     <p>Choose the Guide to Elevate Your Skills</p>
+    <hr>
     <form method="POST" id="mentor-form">
         {% csrf_token %}
         <div class="dev-details">
