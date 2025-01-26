@@ -32,7 +32,7 @@ def devspace(request):
             TaskCompletion.objects.create(student=student, task=task)
             return JsonResponse({"message": "Task marked as completed!"})
 
-        elif action == "select_mentor":
+        else:
             student_id = request.POST.get('student_id')
             roll = request.POST.get('roll')
             mentor_id = request.POST.get('mentor_id')
