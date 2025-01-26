@@ -7,6 +7,7 @@ class mentor(models.Model):
         ("CSE","CSE"),("CAI","CAI"),("CSD","CSD"),("CSM","CSM"),("CSC","CSC"),("CST","CST"),("ECE","ECE"),("EEE","EEE"),("CE","CE"),("ME","ME")
     ]
     mentor_dept= models.CharField(max_length=20, choices=DEPT_CHOICES, default="CSE")
+    mentor_id = models.CharField(max_length=20, default="Mentor ID")
     year = models.IntegerField(default=3)
 
 class Student(models.Model):

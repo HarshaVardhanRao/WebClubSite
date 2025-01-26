@@ -38,7 +38,7 @@
 
         }
         hr{
-            width: 80vw;
+            width: 60vw;
             border: 1px solid #F0A028;
             text-align: center;
             color:rgb(255, 255, 255);
@@ -163,7 +163,7 @@
             margin: 10px;
             gap: 10px;
         }
-        #web_mem_id,#web_roll_id,#web_mem_ids,#mentor{
+        #web_mem_id,#web_roll_id,#web_mem_ids,#mentor,#task_title{
             width: Fixed (400px)px;height: Fixed (48px)px;
             top: 387px;
             left: 338px;
@@ -174,6 +174,8 @@
             opacity: 0px;
             text-align: center;
         }
+        
+          
         @media (max-width: 600px) {
             table, th, td {
                 font-size: 14px;
@@ -218,14 +220,14 @@
     </div></div></div>
     <div class="taskholder" style="background-color: #35354E;padding: 2px;">
         <div class="leaderboard-details">
-            <h2>Member Leaderboard</h2>
-            <p style="color: #fff;">Recognizing Top Contributors and Achievements</p>
+            <h2>Complete Task</h2>
+            <p style="color: #fff;">Members Task Updates & Progress Tracking</p>
         </div>
         <hr>
         <div class="task">
             <h3><Strong>Task : </Strong>
                 <select name="task_title" id="task_title">
-                    <option value=""></option>
+                    <option value=""disabled selected class="placeholder">Select a Task</option>
                     {% for task in tasks %}
                     <option value="{{ task.title }}" data-description="{{ task.description }}" data-duedate="{{ task.due_date }}" data-taskid="{{ task.id }}"="">{{ task.title }}</option>
                     {% endfor %}
