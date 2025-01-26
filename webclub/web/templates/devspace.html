@@ -181,6 +181,19 @@
                 font-size: 14px;
             }
         }
+
+        .space-between{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .space-between strong, .space-between label{
+            width: 30%;
+        }
+        .space-between span, .space-between select, .space-between input{
+            width: 70%;
+        }
     </style>
 </head>
 <body>
@@ -225,23 +238,25 @@
         </div>
         <hr>
         <div class="task">
-            <h3><Strong>Task : </Strong>
+            <h3 class="space-between"><Strong>Task : </Strong>
                 <select name="task_title" id="task_title">
-                    <option value=""disabled selected class="placeholder">Select a Task</option>
+                    <option value="" disabled selected class="placeholder">Select a Task</option>
                     {% for task in tasks %}
-                    <option value="{{ task.title }}" data-description="{{ task.description }}" data-duedate="{{ task.due_date }}" data-taskid="{{ task.id }}"="">{{ task.title }}</option>
+                    <option value="{{ task.title }}" data-description="{{ task.description }}" data-duedate="{{ task.due_date }}" data-taskid="{{ task.id }}">{{ task.title }}</option>
                     {% endfor %}
                 </select>
             </h3>
-            <p id="taskDescription"><Strong>Description : </Strong></p>
-            <p id="taskDueDate"><Strong>Due Date : </Strong></p>
+            <p id="taskDescription" class="space-between"><Strong>Description : </Strong><span></span></p>
+            <p id="taskDueDate" class="space-between"><Strong>Due Date : </Strong><span></pan></p>
             <form method="POST" action="{% url 'devspace' %}">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="complete_task">
                 <input type="hidden" name="task_id" value="">
                     
-                <label for="web_mem_id"><strong>Web ID:</strong></label>
-                <input type="text" id="web_mem_id" name="web_mem_id" required>
+                <div class="space-between">
+                    <label for="web_mem_id"><strong>Web ID:</strong></label>
+                    <input type="text" id="web_mem_id" name="web_mem_id" required>
+                </div>
                 <div style="display: flex; flex-direction: column;align-items: center;">
                 <button type="submit">Mark as Complete</button></div>
             </form>
@@ -289,8 +304,8 @@
             console.log("Hello")
             const description = taskTitle.selectedOptions[0].dataset.description;
             const dueDate = taskTitle.selectedOptions[0].dataset.duedate;
-            document.getElementById('taskDescription').innerHTML = `<strong>Description:</strong> ${description}`;
-            document.getElementById('taskDueDate').innerHTML = `<strong>Due Date:</strong> ${dueDate}`;
+            document.getElementById('taskDescription').innerHTML = `<strong>Description:</strong> <span>${description}</span>`;
+            document.getElementById('taskDueDate').innerHTML = `<strong>Due Date:</strong> <span>${dueDate}</span>`;
             document.querySelector('input[name=task_id]').value = taskTitle.selectedOptions[0].dataset.taskid;
         });
     </script>
