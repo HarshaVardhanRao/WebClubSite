@@ -6,44 +6,70 @@ from math import ceil
 from django.db.models import Count
 
 
-def index(request):
-    mentors = mentor.objects.all()
-    return render(request, 'index.html', {'mentors': mentors})
-
-def about(request):
-    return render(request, 'about.html')
-
-def contact(request):
-    return render(request, 'contact.html')
-
-def leaderboard(request):
-    try:
-        top_members = Student.objects.order_by('-rating')[:]
-    except IndexError:
-        top_members = []
-    return render(request, 'leaderboard.html', {'top_members': top_members})
 
 
 
+def get_max_students_per_mentor():
+    from math import ceil
+    total_students = Student.objects.count()
+    total_mentors = mentor.objects.count()
+    return ceil(total_students / total_mentors) if total_mentors > 0 else 0
 
-
-
-def complete_task(request):
+def devspace(request):
     if request.method == "POST":
-        web_mem_id = request.POST.get("web_mem_id")
-        task_id = request.POST.get("task_id")
+        action = request.POST.get('action')  # Get the action from the hidden input field
 
-        student = get_object_or_404(Student, web_mem=web_mem_id)
-        task = get_object_or_404(Task, id=task_id)
+        if action == "complete_task":
+            web_mem_id = request.POST.get("web_mem_id")
+            task_id = request.POST.get("task_id")
 
-        if TaskCompletion.objects.filter(student=student, task=task).exists():
-            return JsonResponse({"message": "Task already completed!"}, status=400)
+            student = get_object_or_404(Student, web_mem=web_mem_id)
+            task = get_object_or_404(Task, id=task_id)
 
-        TaskCompletion.objects.create(student=student, task=task)
-        return JsonResponse({"message": "Task marked as completed!"})
-    
-    tasks = Task.objects.all()
-    return render(request, 'tasks.html', {'tasks': tasks})
+            if TaskCompletion.objects.filter(student=student, task=task).exists():
+                return JsonResponse({"message": "Task already completed!"}, status=400)
+
+            TaskCompletion.objects.create(student=student, task=task)
+            return JsonResponse({"message": "Task marked as completed!"})
+
+        elif action == "select_mentor":
+            student_id = request.POST.get('student_id')
+            roll = request.POST.get('roll')
+            mentor_id = request.POST.get('mentor_id')
+
+            student = get_object_or_404(Student, web_mem=student_id, roll_no=roll)
+            if student.mentor is not None:
+                return JsonResponse({"error": "You cannot change your mentor! Contact Coordinator."}, status=400)
+
+            selected_mentor = get_object_or_404(mentor, id=mentor_id)
+
+            max_students = get_max_students_per_mentor()
+            current_students = selected_mentor.mentees.count()
+
+            if current_students >= max_students:
+                return JsonResponse({"error": "This mentor has reached the maximum capacity."}, status=400)
+
+            student.mentor = selected_mentor
+            student.save()
+
+            return JsonResponse({"message": "Mentor successfully assigned!"})
+
+    elif request.method == "GET":
+        # Handle GET requests (if applicable)
+        top_members = Student.objects.order_by('-rating')[:5]
+        tasks = Task.objects.all()
+        max_students = get_max_students_per_mentor()
+        mentors = mentor.objects.annotate(student_count=Count('mentees'))
+
+        return render(request, 'devspace.html', {
+            'top_members': top_members,
+            'tasks': tasks,
+            'mentors': mentors,
+            'max_students': max_students
+        })
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
 def assign_task(request):
     if request.method == "POST":
@@ -78,39 +104,9 @@ def assign_task(request):
 
     return render(request, 'assign_task.html')
 
-def get_max_students_per_mentor():
-    from math import ceil
-    total_students = Student.objects.count()
-    total_mentors = mentor.objects.count()
-    return ceil(total_students / total_mentors) if total_mentors > 0 else 0
 
-def select_mentor(request):
-    if request.method == "POST":
-        student_id = request.POST.get('student_id')
-        roll = request.POST.get('roll')
-        mentor_id = request.POST.get('mentor_id')
 
-        student = get_object_or_404(Student, web_mem=student_id,roll_no=roll)
-        if student.mentor is not None:
-            return JsonResponse({"error": "You cannot change your mentor! Contact Coordinator."}, status=400)
-
-        selected_mentor = get_object_or_404(mentor, id=mentor_id)
-
-        max_students = get_max_students_per_mentor()
-        current_students = selected_mentor.mentees.count()
-
-        if current_students >= max_students:
-            return JsonResponse({"error": "This mentor has reached the maximum capacity."}, status=400)
-
-        student.mentor = selected_mentor
-        student.save()
-
-        return JsonResponse({"message": "Mentor successfully assigned!"})
-
-    max_students = get_max_students_per_mentor()
-    mentors = mentor.objects.annotate(student_count=Count('mentees'))
-    return render(request, 'select_mentor.html', {'mentors': mentors, 'max_students': max_students})
-
+########################### Don't Edit #####################################
 def deassign_all_mentors(request):
     if request.method == "POST":
         Student.objects.update(mentor=None)

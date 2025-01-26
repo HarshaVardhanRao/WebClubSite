@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        body {
+            font-family:roboto serif;
+            background-color: #22213A;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .pageOne h1{
+            font-family: Roboto Serif;
+            text-align: center;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            color:rgb(255, 255, 255);
+            
+        }
+        .pageOne p{
+            font-family: Roboto Serif;
+            text-align: center;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            color:rgb(255, 255, 255);
+
+        }
+        .pageOne hr{
+            width: 80vw;
+            border: 1px solid #F0A028;
+            text-align: center;
+            color:rgb(255, 255, 255);
+        }
+        .leaderboard-details h2{
+            font-family: Roboto Serif;
+            text-align: center;
+            color: #F0A028;
+            text-underline-position: from-font;
+            text-decoration-skip-ink: none;
+            
+        }
+        .leaderboard-details p{
+            font-family: Roboto Serif;
+            text-align: center;
+        }
+        .leaderboard-container {
+            width: 80%;
+            max-width: 900px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .leaderboard-header {
+            background-color:#F0A028;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .ratings {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .member-id {
+            font-style: italic;
+            color: #888;
+        }
+
+        @media (max-width: 600px) {
+            table, th, td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pageOne">
+        <div class="space-intro">
+            <h1>WebClub DevSpace</h1>
+            <p>Empowering members with tools for seamless collaboration – track leaderboards, search for talented peers, select mentors, and manage tasks efficiently to drive innovation forward.</p>
+        </div>
+        <hr>
+        <div class="leaderboard-details">
+            <h2>Member Leaderboard</h2>
+            <p>Recognizing Top Contributors and Achievements</p>
+        </div>
+
+    <div class="leaderboard-container">
+        <div class="leaderboard-header">Leaderboard</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Member ID</th>
+                    <th>Name</th>
+                    <th>Ratings</th>
+                    <th>Position</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in top_members %}
+                <tr>
+                    <td class="rank">{{ forloop.counter }}</td>
+                    <td class="member-id">{{ student.web_mem }}</td>
+                    <td>{{ student.name }}</td>
+                    <td class="ratings">{{ student.rating }}</td>
+                    <td class="Rank">{{ student.rank }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div></div></div>
+        {% for task in tasks %}
+    <div>
+        <h3>{{ task.title }}</h3>
+        <p>{{ task.description }}</p>
+        <form method="POST" action="{% url 'devspace' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="complete_task">
+            <input type="hidden" name="task_id" value="{{ task.id }}">
+        <label for="web_mem_id">Enter Web_Mem ID:</label>
+        <input type="text" id="web_mem_id" name="web_mem_id" required>
+        <button type="submit">Mark as Complete</button>
+        </form>
+    </div>
+    {% endfor %}
+
+    <h1>Select a Mentor</h1>
+    <form method="POST" id="mentor-form">
+        {% csrf_token %}
+        <label for="mentor">Choose a Mentor:</label>
+        <select name="mentor_id" id="mentor" required>
+            {% for mentor in mentors %}
+                <option value="{{ mentor.id }}" {% if mentor.student_count >= max_students %}disabled{% endif %}>
+                    {{ mentor.name }} ({{ mentor.student_count }}/{{ max_students }} mentees)
+                </option>
+            {% endfor %}
+        </select>
+        <input type="text" name="student_id" placeholder="Enter Your Web ID">
+        <input type="text" name="roll" placeholder="Enter Your Roll No">
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        const form = document.getElementById('mentor-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+            }).then(response => response.json())
+            .then(data => alert(data.message || data.error));
+        });
+    </script>
+</body>
+</html>
