@@ -12,9 +12,15 @@
             padding: 0;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: 90vh;
         }
-
+        .pageOne {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
         .pageOne h1{
             font-family: Roboto Serif;
             text-align: center;
@@ -37,7 +43,7 @@
             text-align: center;
             color:rgb(255, 255, 255);
         }
-        .leaderboard-details h2{
+        .leaderboard-details h2,.mentor-selection h1{
             font-family: Roboto Serif;
             text-align: center;
             color: #F0A028;
@@ -45,9 +51,10 @@
             text-decoration-skip-ink: none;
             
         }
-        .leaderboard-details p{
+        .leaderboard-details p,.mentor-selection p{
             font-family: Roboto Serif;
             text-align: center;
+            color: #fff;
         }
         .leaderboard-container {
             width: 80%;
@@ -89,19 +96,84 @@
 
         .rank {
             font-weight: bold;
-            color: #4CAF50;
         }
 
         .ratings {
             font-weight: bold;
             color: #555;
         }
-
+        .task{
+            width: 60vw;
+            height: 40vh;
+            background-color: #5D5D71;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            overflow: hidden;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .task strong{
+            color: #F0A028;
+        }
+        .task button{
+            background-color: #F0A028;
+            width: auto;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #submit-button{   
+            background-color: #F0A028;
+            width: auto;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         .member-id {
             font-style: italic;
-            color: #888;
         }
-
+        h1 strong{
+            color: #F0A028;
+        }
+        .mentor-selection{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #mentor-form{
+            display: flex;
+            flex-direction: column;
+            
+        }
+        form#mentor-form {
+            gap: 10px;
+        }
+        .dev-details{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            gap: 10px;
+        }
+        #web_mem_id,#web_roll_id,#web_mem_ids,#mentor{
+            width: Fixed (400px)px;height: Fixed (48px)px;
+            top: 387px;
+            left: 338px;
+            padding: 14px 0px 0px 0px;
+            gap: 10px;
+            border-radius: 10px;
+            border: 0.8px 0px 0px 0px;
+            opacity: 0px;
+            text-align: center;
+        }
         @media (max-width: 600px) {
             table, th, td {
                 font-size: 14px;
@@ -112,7 +184,7 @@
 <body>
     <div class="pageOne">
         <div class="space-intro">
-            <h1>WebClub DevSpace</h1>
+            <h1><strong>Web</strong>Club DevSpace</h1>
             <p>Empowering members with tools for seamless collaboration – track leaderboards, search for talented peers, select mentors, and manage tasks efficiently to drive innovation forward.</p>
         </div>
         <hr>
@@ -146,25 +218,41 @@
             </tbody>
         </table>
     </div></div></div>
+    <div class="taskholder" style="background-color: #35354E;padding: 2px;">
+        <div class="leaderboard-details">
+            <h2>Member Leaderboard</h2>
+            <p style="color: #fff;">Recognizing Top Contributors and Achievements</p>
+        </div>
         {% for task in tasks %}
-    <div>
-        <h3>{{ task.title }}</h3>
-        <p>{{ task.description }}</p>
+    <div class="task">
+        <h3><Strong>Task : </Strong>{{ task.title }}</h3>
+        <p><Strong>Description : </Strong>{{ task.description }}</p>
+        <p><Strong>Due Date : </Strong>{{ task.due_date }}</p>
         <form method="POST" action="{% url 'devspace' %}">
             {% csrf_token %}
             <input type="hidden" name="action" value="complete_task">
             <input type="hidden" name="task_id" value="{{ task.id }}">
-        <label for="web_mem_id">Enter Web_Mem ID:</label>
+            
+        <label for="web_mem_id"><strong>Web ID:</strong></label>
         <input type="text" id="web_mem_id" name="web_mem_id" required>
-        <button type="submit">Mark as Complete</button>
+        <div style="display: flex; flex-direction: column;align-items: center;">
+        <button type="submit">Mark as Complete</button></div>
         </form>
     </div>
     {% endfor %}
-
+    <div ></div></div>
+    <div class="mentor-selection">
     <h1>Select a Mentor</h1>
+    <p>Choose the Guide to Elevate Your Skills</p>
     <form method="POST" id="mentor-form">
         {% csrf_token %}
-        <label for="mentor">Choose a Mentor:</label>
+        <div class="dev-details">
+        <label for="web_mem_ids"><strong style="color: #F0A028;">Web ID:</strong></label>
+        <input type="text" name="student_id" id="web_mem_ids" placeholder="Enter Your Web ID">
+        <label for="web_roll_id"><strong style="color: #F0A028;">Roll No:</strong></label>
+        <input type="text" name="roll" id="web_roll_id" placeholder="Enter Your Roll No"></div>
+        <div style="display: flex;gap: 1rem;">
+        <label for="mentor"><strong style="color: #F0A028;">Choose a Mentor:</strong></label>
         <select name="mentor_id" id="mentor" required>
             {% for mentor in mentors %}
                 <option value="{{ mentor.id }}" {% if mentor.student_count >= max_students %}disabled{% endif %}>
@@ -172,10 +260,11 @@
                 </option>
             {% endfor %}
         </select>
-        <input type="text" name="student_id" placeholder="Enter Your Web ID">
-        <input type="text" name="roll" placeholder="Enter Your Roll No">
-        <button type="submit">Submit</button>
+    </div>
+        <div style="display: flex; flex-direction: column;align-items: center;color: #F0A028;">
+        <button type="submit" id="submit-button">Submit</button></div>
     </form>
+    </div>
     <script>
         const form = document.getElementById('mentor-form');
         form.addEventListener('submit', function (event) {
