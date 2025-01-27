@@ -18,7 +18,6 @@ def get_max_students_per_mentor():
 def devspace(request):
     if request.method == "POST":
         action = request.POST.get('action')  # Get the action from the hidden input field
-
         if action == "complete_task":
             web_mem_id = request.POST.get("web_mem_id")
             task_id = request.POST.get("task_id")
@@ -37,7 +36,11 @@ def devspace(request):
             roll = request.POST.get('roll')
             mentor_id = request.POST.get('mentor_id')
 
-            student = get_object_or_404(Student, web_mem=student_id, roll_no=roll)
+            students = Student.objects.filter(web_mem=student_id, roll_no=roll)
+            if len(students) == 0:
+                return JsonResponse({"error": "Student not found"}, status=404)
+            student = students[0]
+            print(student)
             if student.mentor is not None:
                 return JsonResponse({"error": "You cannot change your mentor! Contact Coordinator."}, status=400)
 

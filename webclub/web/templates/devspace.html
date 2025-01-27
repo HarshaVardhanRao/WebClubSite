@@ -269,7 +269,7 @@
     <form method="POST" id="mentor-form">
         {% csrf_token %}
         <div class="dev-details">
-        <label type="hidden" name="action" value="select_mentor">
+        <input type="hidden" name="action" value="select_mentor">
         <label for="web_mem_ids"><strong style="color: #F0A028;">Web ID:</strong></label>
         <input type="text" name="student_id" id="web_mem_ids" placeholder="Enter Your Web ID">
         <label for="web_roll_id"><strong style="color: #F0A028;">Roll No:</strong></label>
@@ -313,7 +313,7 @@
         taskForm.addEventListener('submit', function (event) {
             event.preventDefault();
             console.log(taskForm.action);
-            fetch('/', {
+            fetch(taskForm.action, {
                 method: 'POST',
                 body: new FormData(taskForm),
                 headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
