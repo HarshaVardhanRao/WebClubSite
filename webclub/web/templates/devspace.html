@@ -27,7 +27,7 @@
             text-underline-position: from-font;
             text-decoration-skip-ink: none;
             color:rgb(255, 255, 255);
-            
+
         }
         .pageOne p{
             font-family: Roboto Serif;
@@ -49,7 +49,7 @@
             color: #F0A028;
             text-underline-position: from-font;
             text-decoration-skip-ink: none;
-            
+
         }
         .leaderboard-details p,.mentor-selection p{
             font-family: Roboto Serif;
@@ -104,7 +104,7 @@
         }
         .task{
             width: 60vw;
-            height: 40vh;
+            min-height: 40vh;
             background-color: #5D5D71;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -127,7 +127,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #submit-button{   
+        #submit-button{
             background-color: #F0A028;
             width: auto;
             color: white;
@@ -151,7 +151,7 @@
         #mentor-form{
             display: flex;
             flex-direction: column;
-            
+
         }
         form#mentor-form {
             gap: 10px;
@@ -174,8 +174,8 @@
             opacity: 0px;
             text-align: center;
         }
-        
-          
+
+
         @media (max-width: 600px) {
             table, th, td {
                 font-size: 14px;
@@ -248,11 +248,11 @@
             </h3>
             <p id="taskDescription" class="space-between"><Strong>Description : </Strong><span></span></p>
             <p id="taskDueDate" class="space-between"><Strong>Due Date : </Strong><span></pan></p>
-            <form method="POST" action="{% url 'devspace' %}">
+            <form method="POST" action="{% url 'devspace' %}" id="task-form">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="complete_task">
                 <input type="hidden" name="task_id" value="">
-                    
+
                 <div class="space-between">
                     <label for="web_mem_id"><strong>Web ID:</strong></label>
                     <input type="text" id="web_mem_id" name="web_mem_id" required>
@@ -269,6 +269,7 @@
     <form method="POST" id="mentor-form">
         {% csrf_token %}
         <div class="dev-details">
+        <label type="hidden" name="action" value="select_mentor">
         <label for="web_mem_ids"><strong style="color: #F0A028;">Web ID:</strong></label>
         <input type="text" name="student_id" id="web_mem_ids" placeholder="Enter Your Web ID">
         <label for="web_roll_id"><strong style="color: #F0A028;">Roll No:</strong></label>
@@ -291,22 +292,33 @@
         const form = document.getElementById('mentor-form');
         form.addEventListener('submit', function (event) {
             event.preventDefault();
-            fetch(form.action, {
+            fetch('/', {
                 method: 'POST',
                 body: new FormData(form),
                 headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
             }).then(response => response.json())
             .then(data => alert(data.message || data.error));
         });
-        
+
         const taskTitle = document.getElementById('task_title');
         taskTitle.addEventListener('change', function () {
-            console.log("Hello")
             const description = taskTitle.selectedOptions[0].dataset.description;
             const dueDate = taskTitle.selectedOptions[0].dataset.duedate;
             document.getElementById('taskDescription').innerHTML = `<strong>Description:</strong> <span>${description}</span>`;
             document.getElementById('taskDueDate').innerHTML = `<strong>Due Date:</strong> <span>${dueDate}</span>`;
-            document.querySelector('input[name=task_id]').value = taskTitle.selectedOptions[0].dataset.taskid;
+            document.querySelector('input[name="task_id"]').value = taskTitle.selectedOptions[0].dataset.taskid;
+        });
+
+        const taskForm = document.querySelector('form#task-form');
+        taskForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            console.log(taskForm.action);
+            fetch('/', {
+                method: 'POST',
+                body: new FormData(taskForm),
+                headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+            }).then(response => response.json())
+            .then(data => alert(data.message || data.error));
         });
     </script>
 </body>
