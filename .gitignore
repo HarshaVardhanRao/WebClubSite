@@ -5,3 +5,4 @@ __pycache__/
 /webclub/webclub/__pycache__/
 /webclub/migrations/__pycache__
 *.pyc
+db.sqlite3
