@@ -23,7 +23,7 @@ print(BASE_DIR)
 SECRET_KEY = 'django-insecure-g__7hv$ty9sin3u!#=mi-*t8###(x5#&z=$jlp3c@ne!lkl4)p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["mitswebclub.pythonanywhere.com",'127.0.0.1']
 

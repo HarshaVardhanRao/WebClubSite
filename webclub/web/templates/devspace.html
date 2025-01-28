@@ -248,7 +248,7 @@
             </h3>
             <p id="taskDescription" class="space-between"><Strong>Description : </Strong><span></span></p>
             <p id="taskDueDate" class="space-between"><Strong>Due Date : </Strong><span></pan></p>
-            <form method="POST" action="{% url 'devspace' %}" id="task-form">
+            <form method="POST" id="task-form">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="complete_task">
                 <input type="hidden" name="task_id" value="">
@@ -312,8 +312,8 @@
         const taskForm = document.querySelector('form#task-form');
         taskForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            console.log(taskForm.action);
-            fetch(taskForm.action, {
+            console.log(taskForm);
+            fetch('/', {
                 method: 'POST',
                 body: new FormData(taskForm),
                 headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},

@@ -36,7 +36,7 @@ def devspace(request):
             roll = request.POST.get('roll')
             mentor_id = request.POST.get('mentor_id')
 
-            students = Student.objects.filter(web_mem=student_id, roll_no=roll)
+            students = Student.objects.filter(web_mem__iexact=student_id, roll_no__iexact=roll)
             if len(students) == 0:
                 return JsonResponse({"error": "Student not found"}, status=404)
             student = students[0]
